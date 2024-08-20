@@ -10,7 +10,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Get and Set bucket name
-        run: echo "BUCKET_NAME={ aws ssm get-parameter --name "/deploy/bucket" --output json --profile temp --region us-west-2 | jq '.Parameter.Value' }" >> "$GITHUB_ENV"
+        run: echo "BUCKET_NAME=${{ aws ssm get-parameter --name "/deploy/bucket" --output json --profile temp --region us-west-2 | jq '.Parameter.Value' }}" >> "$GITHUB_ENV"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
