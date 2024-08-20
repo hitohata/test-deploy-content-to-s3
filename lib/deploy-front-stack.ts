@@ -26,11 +26,11 @@ export class DeployFrontStack extends cdk.Stack {
       }
     })
 
-    new ssm.StringParameter(this, "ContentBucketName", {
+    const bucketNameParameter = new ssm.StringParameter(this, "ContentBucketName", {
       parameterName: "/deploy/bucket",
       stringValue: contentBucket.bucketName
     })
-    new ssm.StringParameter(this, "ContentDistributionName", {
+    const distributionNameParameter = new ssm.StringParameter(this, "ContentDistributionName", {
       parameterName: "/deploy/distribution",
       stringValue: distribution.distributionId
     })
@@ -54,7 +54,10 @@ export class DeployFrontStack extends cdk.Stack {
                 new iam.PolicyStatement({
                   effect: iam.Effect.ALLOW,
                   actions: ["ssm:GetParameter"],
-                  resources: ["*"]
+                  resources: [
+                      bucketNameParameter.parameterArn,
+                      distributionNameParameter.parameterArn
+                  ]
                 })
             ]
           })
