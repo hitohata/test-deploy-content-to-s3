@@ -12,9 +12,7 @@ jobs:
       - name: set dummy value
         run: echo "dummy=dummy" >> "$GITHUB_ENV"
       - name: show_value
-        run: echo "::set-output name=show::$(aws ssm get-parameter --name "/deploy/bucket" --output json --profile temp --region us-west-2 | jq '.Parameter.Value')"
-      - name: show
-        run: echo ${{ steps.show_value.outputs.show}}
+        run: aws ssm get-parameter --name "/deploy/bucket" --output json --profile temp --region us-west-2 | jq '.Parameter.Value'
       - name: Get and Set bucket name
         run: |
           cmd="$(aws ssm get-parameter --name "/deploy/bucket" --output json --profile temp --region us-west-2 | jq '.Parameter.Value')" |
