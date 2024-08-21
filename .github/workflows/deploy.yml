@@ -15,7 +15,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: print name
-        run: echo ${{ STAGE_SUFFIX }}
+        run: echo $STAGE_SUFFIX
 #      - name: Get and Set bucket name
 #        run: |
 #          cmd="$(aws ssm get-parameter --name "/deploy/bucket" --output json --region us-west-2 | jq '.Parameter.Value')"
