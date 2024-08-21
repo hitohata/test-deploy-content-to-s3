@@ -6,12 +6,18 @@ import * as ssm from "aws-cdk-lib/aws-ssm";
 import * as iam from "aws-cdk-lib/aws-iam"
 import { Construct } from 'constructs';
 
+interface IProps extends cdk.StackProps {
+  stage: "dev" | "prod";
+}
+
 export class DeployFrontStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props: IProps) {
     super(scope, id, props);
 
+    const { stage } =  props;
+
     const contentBucket = new s3.Bucket(this, "ContentBucket", {
-      bucketName: "content-bucket-bucket-bucket",
+      bucketName: `content-bucket-bucket-bucket-${stage}`,
       encryption: s3.BucketEncryption.S3_MANAGED,
       removalPolicy: cdk.RemovalPolicy.DESTROY
     });
@@ -27,16 +33,16 @@ export class DeployFrontStack extends cdk.Stack {
     })
 
     const bucketNameParameter = new ssm.StringParameter(this, "ContentBucketName", {
-      parameterName: "/deploy/bucket",
+      parameterName: `/deploy/bucket/${stage}`,
       stringValue: contentBucket.bucketName
     })
     const distributionNameParameter = new ssm.StringParameter(this, "ContentDistributionName", {
-      parameterName: "/deploy/distribution",
+      parameterName: `/deploy/distribution/${stage}`,
       stringValue: distribution.distributionId
     })
 
     new iam.User(this, "DeployUser", {
-      userName: "UploadUser",
+      userName: `UploadUser-${stage}`,
       managedPolicies: [
          new iam.ManagedPolicy(this, "DeploymentPolicyManaged", {
           document: new iam.PolicyDocument({
