@@ -14,12 +14,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: print name
-        run: echo $STAGE_SUFFIX
       - name: Get and Set bucket name
         run: |
           suffix=$STAGE_SUFFIX
-          cmd=aws ssm get-parameter --name "/deploy/bucket/dev --output json --region us-west-2 | jq '.Parameter.Value')"
+          cmd="$(aws ssm get-parameter --name "/deploy/bucket/dev --output json --region us-west-2 | jq '.Parameter.Value')"
           echo "BUCKET_NAME=$cmd" >> "$GITHUB_ENV"
       - name: Get and Set bucket name
         run: |
