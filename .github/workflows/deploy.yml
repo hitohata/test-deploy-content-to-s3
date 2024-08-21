@@ -15,7 +15,7 @@ jobs:
        - name: print
          run: |
            suffix=$STAGE_SUFFIX
-           echo $(echo "this is an echo")
+           echo $(echo "this is an echo $suffix")
 #      - name: Checkout
 #        uses: actions/checkout@v4
 #      - name: Get and Set bucket name
