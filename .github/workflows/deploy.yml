@@ -10,18 +10,21 @@ jobs:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: 'us-west-2'
+      STAGE_SUFFIX: ${{ github.ref_name == 'main' && '-prod' || '-dev' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Get and Set bucket name
-        run: |
-          cmd="$(aws ssm get-parameter --name "/deploy/bucket" --output json --region us-west-2 | jq '.Parameter.Value')"
-          echo "BUCKET_NAME=$cmd" >> "$GITHUB_ENV"
-      - name: Get and Set bucket name
-        run: |
-          cmd="$(aws ssm get-parameter --name "/deploy/distribution" --output json --region us-west-2 | jq '.Parameter.Value')"
-          echo "DISTRIBUTION=$cmd" >> "$GITHUB_ENV"
-      - name: Update to s3
-        run: aws s3 cp ./dist/ s3://${{ env.BUCKET_NAME }} --recursive
-      - name: remove cache of cloudfront
-        run: aws cloudfront create-invalidation --distribution-id ${{ env.DISTRIBUTION }} --paths "/*"
+      - name: print name
+        run: echo ${{ STAGE_SUFFIX }}
+#      - name: Get and Set bucket name
+#        run: |
+#          cmd="$(aws ssm get-parameter --name "/deploy/bucket" --output json --region us-west-2 | jq '.Parameter.Value')"
+#          echo "BUCKET_NAME=$cmd" >> "$GITHUB_ENV"
+#      - name: Get and Set bucket name
+#        run: |
+#          cmd="$(aws ssm get-parameter --name "/deploy/distribution" --output json --region us-west-2 | jq '.Parameter.Value')"
+#          echo "DISTRIBUTION=$cmd" >> "$GITHUB_ENV"
+#      - name: Update to s3
+#        run: aws s3 cp ./dist/ s3://${{ env.BUCKET_NAME }} --recursive
+#      - name: remove cache of cloudfront
+#        run: aws cloudfront create-invalidation --distribution-id ${{ env.DISTRIBUTION }} --paths "/*"
