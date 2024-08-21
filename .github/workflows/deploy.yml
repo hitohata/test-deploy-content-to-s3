@@ -18,11 +18,13 @@ jobs:
         run: echo $STAGE_SUFFIX
       - name: Get and Set bucket name
         run: |
-          cmd="$(aws ssm get-parameter --name "/deploy/bucket/$STAGE_SUFFIX" --output json --region us-west-2 | jq '.Parameter.Value')"
+          suffix=$STAGE_SUFFIX
+          cmd="$(aws ssm get-parameter --name "/deploy/bucket/$suffix" --output json --region us-west-2 | jq '.Parameter.Value')"
           echo "BUCKET_NAME=$cmd" >> "$GITHUB_ENV"
       - name: Get and Set bucket name
         run: |
-          cmd="$(aws ssm get-parameter --name "/deploy/distribution/$STAGE_SUFFIX" --output json --region us-west-2 | jq '.Parameter.Value')"
+          suffix=$STAGE_SUFFIX
+          cmd="$(aws ssm get-parameter --name "/deploy/distribution/$suffix" --output json --region us-west-2 | jq '.Parameter.Value')"
           echo "DISTRIBUTION=$cmd" >> "$GITHUB_ENV"
       - name: Update to s3
         run: aws s3 cp ./dist/ s3://${{ env.BUCKET_NAME }} --recursive
